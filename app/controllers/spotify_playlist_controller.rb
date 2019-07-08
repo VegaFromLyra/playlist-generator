@@ -1,18 +1,21 @@
 class SpotifyPlaylistController < ApplicationController
+  include SlackSignature
+
   protect_from_forgery
 
-  before_action :verify_signature
-
   def create
-    response = {
-      text: "We are hard at work.."
-    }
+    if authenticated?
+      response = {
+        text: "We are hard at work.."
+      }
 
-    render json: response, status: 201
-  end
+      render json: response, status: 201
+    else
+      response = {
+        text: "The request signature is not valid"
+      }
 
-  def verify_signature
-    # TODO: Implement Slack's signed signature verification
-    # https://api.slack.com/docs/verifying-requests-from-slack
+      render json: response, status: 401
+    end
   end
 end
